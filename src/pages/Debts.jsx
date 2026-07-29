@@ -38,7 +38,7 @@ export default function Debts() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const payload = { ...form, amount: parseFloat(form.amount) };
+    const payload = { ...form, amount: parseFloat(form.amount), dueDate: form.dueDate || null, personEmail: form.personEmail || null, personName: form.personName || null };
     const action = editingItem ? debtAPI.update(editingItem.id, payload) : debtAPI.create(payload);
     action.then(() => {
       toast.success(editingItem ? 'Debt updated' : 'Debt added');
