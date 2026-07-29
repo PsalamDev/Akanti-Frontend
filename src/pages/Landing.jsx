@@ -103,6 +103,9 @@ export default function Landing() {
           <div className="hidden md:flex items-center gap-6">
             <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Home</a>
             <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">About</a>
+            <Link to="/docs" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Docs</Link>
+            <Link to="/privacy" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Privacy</Link>
+            <Link to="/terms" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Terms</Link>
             {token ? (
               <Link to="/dashboard" className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">Dashboard</Link>
             ) : (
@@ -120,6 +123,9 @@ export default function Landing() {
           <div className="md:hidden border-t border-gray-100 dark:border-gray-800 px-4 py-4 space-y-3">
             <a href="#" className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Home</a>
             <a href="#about" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">About</a>
+            <Link to="/docs" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Docs</Link>
+            <Link to="/privacy" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Privacy</Link>
+            <Link to="/terms" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Terms</Link>
             {token ? (
               <Link to="/dashboard" className="block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium text-center">Dashboard</Link>
             ) : (
@@ -183,30 +189,46 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Meet AI */}
+      {/* Stats */}
+      <section className="px-6 py-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { value: '10k+', label: 'Active Users' },
+            { value: '50k+', label: 'Transactions Tracked' },
+            { value: '99.9%', label: 'Uptime' },
+            { value: '4.8', label: 'User Rating' },
+          ].map((s, i) => (
+            <div key={i} className="space-y-1">
+              <p className="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">{s.value}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Why Akanti */}
       <section className="px-6 py-20 bg-white dark:bg-gray-900">
-        
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-block px-4 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm font-medium mb-6"> Akanti</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Meet <span className="text-green-600 dark:text-green-400">Akanti</span></h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Akanti is your personal financial advisor that lives inside your dashboard. It learns from your income patterns, spending habits, and budget goals to give you real, actionable advice — not generic tips.
-          </p>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm font-medium mb-4">Why Akanti</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Smarter Than a Spreadsheet</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Most finance apps just track what you spend. Akanti understands it — and helps you make better decisions.</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mx-auto mb-4"><MessageCircle size={24} className="text-green-600 dark:text-green-400" /></div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Chat Naturally</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Ask anything about your finances in plain English. "How much did I spend on food this month?" — AI has the answer.</p>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mb-5"><MessageCircle size={26} className="text-green-600 dark:text-green-400" /></div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Chat in Plain English</h3>
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed">Ask "How much did I spend on food this month?" or "Give me budgeting tips" — the AI understands and answers from your actual data.</p>
             </div>
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mx-auto mb-4"><Lightbulb size={24} className="text-green-600 dark:text-green-400" /></div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Smart Insights</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">It spots trends you might miss — unusual spending, savings opportunities, and budget risks before they become problems.</p>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mb-5"><Lightbulb size={26} className="text-green-600 dark:text-green-400" /></div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">AI That Knows You</h3>
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed">Every insight is personalized — based on your income, your spending, your goals. No generic advice, no one-size-fits-all tips.</p>
             </div>
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mx-auto mb-4"><PieChart size={24} className="text-green-600 dark:text-green-400" /></div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Personalized Advice</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Every recommendation is based on YOUR data — your income, your expenses, your goals. No one-size-fits-all advice here.</p>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mb-5"><PieChart size={26} className="text-green-600 dark:text-green-400" /></div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Full Picture Dashboard</h3>
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed">Income, expenses, budgets, debts, cash flow, reports — everything in one place. Beautiful charts make your finances easy to understand.</p>
             </div>
           </div>
         </div>
@@ -321,19 +343,50 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="px-6 py-8 bg-gray-900 dark:bg-gray-950">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <img src="/akanti-logo.jpeg" alt="Akanti" className="h-8 w-8 rounded-lg object-cover" />
-            <span className="text-2xl font-bold text-green-600 dark:text-green-400">Akanti</span>
+      <footer className="px-6 py-12 bg-gray-900 dark:bg-gray-950">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <img src="/akanti-logo.jpeg" alt="Akanti" className="h-8 w-8 rounded-lg object-cover" />
+              <span className="text-xl font-bold text-green-600 dark:text-green-400">Akanti</span>
+            </div>
+            <p className="text-gray-400 text-sm leading-relaxed">AI-powered personal finance management for everyone. Track, budget, and grow your wealth.</p>
+            <div className="flex items-center gap-3 pt-2">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors"><Twitter size={18} /></a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors"><Instagram size={18} /></a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors"><Linkedin size={18} /></a>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors"><Github size={18} /></a>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-500 transition-colors"><Twitter size={20} /></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-500 transition-colors"><Instagram size={20} /></a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-500 transition-colors"><Linkedin size={20} /></a>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-500 transition-colors"><Github size={20} /></a>
+          <div>
+            <h4 className="text-white font-semibold mb-3">Product</h4>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#about" className="text-gray-400 hover:text-green-500 transition-colors">Features</a></li>
+              <li><Link to="/docs" className="text-gray-400 hover:text-green-500 transition-colors">Documentation</Link></li>
+              <li><a href="#" className="text-gray-400 hover:text-green-500 transition-colors">Pricing</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-green-500 transition-colors">Changelog</a></li>
+            </ul>
           </div>
-          <p className="text-gray-400 text-sm">&copy; 2026 Akanti. All rights reserved.</p>
+          <div>
+            <h4 className="text-white font-semibold mb-3">Company</h4>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#about" className="text-gray-400 hover:text-green-500 transition-colors">About</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-green-500 transition-colors">Blog</a></li>
+              <li><Link to="/privacy" className="text-gray-400 hover:text-green-500 transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="text-gray-400 hover:text-green-500 transition-colors">Terms of Service</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white font-semibold mb-3">Support</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link to="/docs" className="text-gray-400 hover:text-green-500 transition-colors">Help Center</Link></li>
+              <li><a href="mailto:support@akanti.com" className="text-gray-400 hover:text-green-500 transition-colors">Contact Us</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-green-500 transition-colors">Status</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto border-t border-gray-800 mt-8 pt-8 text-center">
+          <p className="text-gray-500 text-sm">&copy; 2026 Akanti. All rights reserved.</p>
         </div>
       </footer>
     </div>

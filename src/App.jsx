@@ -5,6 +5,9 @@ import DashboardLayout from './layouts/DashboardLayout';
 import AdminLayout from './layouts/AdminLayout';
 import AdminRoute from './components/AdminRoute';
 import Landing from './pages/Landing';
+import Documentation from './pages/Documentation';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyEmail from './pages/VerifyEmail';
@@ -41,6 +44,9 @@ export default function App() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/docs" element={<Documentation />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/verify-email" element={<VerifyEmail />} />
