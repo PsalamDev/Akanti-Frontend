@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { incomeAPI, expenseAPI, budgetAPI, debtAPI } from '../services/api';
 import StatCard from '../components/StatCard';
-import ConfirmModal from '../components/ConfirmModal';
 import toast from 'react-hot-toast';
 import { CircleDollarSign, TrendingUp, TrendingDown, Target, Bot } from 'lucide-react';
 
@@ -35,22 +34,25 @@ export default function Dashboard() {
   const balance = totalIncome - totalExpenses;
   const activeBudgets = budgets.length;
 
+  const safeDate = (d) => d ? new Date(d) : null;
+  const fmtDate = (d) => d ? safeDate(d)?.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }) : '';
+
   const monthlyTrends = useMemo(() => {
     const months = {};
     income.forEach(item => {
-      const key = new Date(item.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+      const key = fmtDate(item.date) || 'Unknown';
       if (!months[key]) months[key] = { month: key, income: 0, expenses: 0 };
       months[key].income += item.amount;
     });
     expenses.forEach(item => {
-      const key = new Date(item.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+      const key = fmtDate(item.date) || 'Unknown';
       if (!months[key]) months[key] = { month: key, income: 0, expenses: 0 };
       months[key].expenses += item.amount;
     });
     return Object.values(months).sort((a, b) => {
-      const dateA = new Date(a.month);
-      const dateB = new Date(b.month);
-      return dateA - dateB;
+      const dateA = safeDate(a.month);
+      const dateB = safeDate(b.month);
+      return (dateA?.getTime() || 0) - (dateB?.getTime() || 0);
     });
   }, [income, expenses]);
 
@@ -66,25 +68,6 @@ export default function Dashboard() {
       .sort((a, b) => b.value - a.value)
       .slice(0, 5);
   }, [expenses]);
-
-  const incomeVsExpense = useMemo(() => {
-    const months = {};
-    income.forEach(item => {
-      const key = new Date(item.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-      if (!months[key]) months[key] = { month: key, income: 0, expenses: 0 };
-      months[key].income += item.amount;
-    });
-    expenses.forEach(item => {
-      const key = new Date(item.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-      if (!months[key]) months[key] = { month: key, income: 0, expenses: 0 };
-      months[key].expenses += item.amount;
-    });
-    return Object.values(months).sort((a, b) => {
-      const dateA = new Date(a.month);
-      const dateB = new Date(b.month);
-      return dateA - dateB;
-    });
-  }, [income, expenses]);
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div></div>;
 
@@ -155,7 +138,7 @@ export default function Dashboard() {
                 <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">{item.title}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(item.date).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.date ? new Date(item.date).toLocaleDateString() : '-'}</p>
                   </div>
                   <span className="text-green-600 dark:text-green-400 font-semibold">+₦{item.amount.toLocaleString()}</span>
                 </div>
@@ -174,7 +157,7 @@ export default function Dashboard() {
                 <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">{item.title}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.categoryName || item.category || '-'} • {new Date(item.date).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.categoryName || item.category || '-'} • {item.date ? new Date(item.date).toLocaleDateString() : '-'}</p>
                   </div>
                   <span className="text-red-600 dark:text-red-400 font-semibold">-₦{item.amount.toLocaleString()}</span>
                 </div>

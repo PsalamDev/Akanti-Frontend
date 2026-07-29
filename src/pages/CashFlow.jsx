@@ -22,15 +22,17 @@ export default function CashFlow() {
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
   const netCashFlow = totalIncome - totalExpenses;
 
+  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', year: '2-digit' }) : '';
+
   const monthlyData = () => {
     const months = {};
     income.forEach(i => {
-      const key = new Date(i.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+      const key = fmtDate(i.date) || 'Unknown';
       months[key] = months[key] || { name: key, income: 0, expenses: 0 };
       months[key].income += i.amount;
     });
     expenses.forEach(e => {
-      const key = new Date(e.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+      const key = fmtDate(e.date) || 'Unknown';
       months[key] = months[key] || { name: key, income: 0, expenses: 0 };
       months[key].expenses += e.amount;
     });

@@ -20,15 +20,17 @@ export default function Reports() {
   const totalIncome = income.reduce((sum, i) => sum + i.amount, 0);
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
+  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short' }) : '';
+
   const monthlyData = () => {
     const months = {};
     income.forEach(i => {
-      const key = new Date(i.date).toLocaleDateString('en-US', { month: 'short' });
+      const key = fmtDate(i.date) || 'Unknown';
       months[key] = months[key] || { name: key, income: 0, expenses: 0 };
       months[key].income += i.amount;
     });
     expenses.forEach(e => {
-      const key = new Date(e.date).toLocaleDateString('en-US', { month: 'short' });
+      const key = fmtDate(e.date) || 'Unknown';
       months[key] = months[key] || { name: key, income: 0, expenses: 0 };
       months[key].expenses += e.amount;
     });
@@ -37,8 +39,8 @@ export default function Reports() {
 
   const downloadCSV = () => {
     const rows = [['Type', 'Description', 'Amount', 'Category', 'Date']];
-    income.forEach(i => rows.push(['Income', i.source, i.amount, i.category || '', new Date(i.date).toLocaleDateString()]));
-    expenses.forEach(e => rows.push(['Expense', e.description, e.amount, e.category || '', new Date(e.date).toLocaleDateString()]));
+    income.forEach(i => rows.push(['Income', i.source || i.title, i.amount, i.category || '', i.date ? new Date(i.date).toLocaleDateString() : '-']));
+    expenses.forEach(e => rows.push(['Expense', e.description || e.title, e.amount, e.category || '', e.date ? new Date(e.date).toLocaleDateString() : '-']));
     const csv = rows.map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);

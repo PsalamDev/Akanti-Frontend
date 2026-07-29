@@ -85,7 +85,7 @@ export default function Income() {
                   <td className="px-4 sm:px-6 py-4 text-gray-900 dark:text-white font-medium">{item.title}</td>
                   <td className="px-4 sm:px-6 py-4 text-green-600 dark:text-green-400 font-semibold">₦{item.amount.toLocaleString()}</td>
                   <td className="hidden sm:table-cell px-6 py-4 text-gray-500 dark:text-gray-400">{item.description || '-'}</td>
-                  <td className="px-4 sm:px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{new Date(item.date).toLocaleDateString()}</td>
+                    <td className="px-4 sm:px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{item.date ? new Date(item.date).toLocaleDateString() : '-'}</td>
                   <td className="px-4 sm:px-6 py-4 text-right space-x-2">
                     <button onClick={() => openEdit(item)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 text-sm">Edit</button>
                     <button onClick={() => openDelete(item)} className="text-red-600 hover:text-red-800 dark:text-red-400 text-sm">Delete</button>
