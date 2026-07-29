@@ -1,16 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { incomeAPI, expenseAPI, budgetAPI, debtAPI } from '../services/api';
+import { incomeAPI, expenseAPI, budgetAPI, debtAPI, aiAPI } from '../services/api';
 import StatCard from '../components/StatCard';
 import toast from 'react-hot-toast';
-import { CircleDollarSign, TrendingUp, TrendingDown, Target, Bot } from 'lucide-react';
+import { CircleDollarSign, TrendingUp, TrendingDown, Target, Bot, HeartPulse } from 'lucide-react';
 
 export default function Dashboard() {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [debts, setDebts] = useState([]);
+  const [healthScore, setHealthScore] = useState(null);
+  const [healthScoreLoading, setHealthScoreLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -27,7 +29,16 @@ export default function Dashboard() {
       setDebts(deb.data);
     }).catch(() => toast.error('Failed to load dashboard data'))
       .finally(() => setLoading(false));
+
+    aiAPI.getHealthScore()
+      .then(res => setHealthScore(res.data))
+      .catch(() => {})
+      .finally(() => setHealthScoreLoading(false));
   }, []);
+
+  const healthScoreValue = typeof healthScore === 'object' && healthScore !== null ? healthScore.score ?? healthScore.healthScore ?? healthScore : healthScore;
+  const scoreNum = Number(healthScoreValue);
+  const healthColor = scoreNum >= 80 ? 'green' : scoreNum >= 50 ? 'yellow' : 'red';
 
   const totalIncome = income.reduce((sum, i) => sum + i.amount, 0);
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
@@ -78,7 +89,10 @@ export default function Dashboard() {
         <p className="text-gray-500 dark:text-gray-400">Welcome back! Here's your financial overview.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {!healthScoreLoading && healthScoreValue != null && (
+          <StatCard title="Financial Health" value={`${scoreNum}/100`} icon={<HeartPulse size={24} />} color={healthColor} />
+        )}
         <StatCard title="Total Balance" value={`₦${balance.toLocaleString()}`} icon={<CircleDollarSign size={24} />} color={balance >= 0 ? 'green' : 'red'} />
         <StatCard title="Total Income" value={`₦${totalIncome.toLocaleString()}`} icon={<TrendingUp size={24} />} color="green" />
         <StatCard title="Total Expenses" value={`₦${totalExpenses.toLocaleString()}`} icon={<TrendingDown size={24} />} color="red" />
