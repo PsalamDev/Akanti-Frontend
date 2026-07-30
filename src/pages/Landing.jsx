@@ -344,7 +344,7 @@ export default function Landing() {
               <img src="/akanti-logo.jpeg" alt="Akanti" className="h-8 w-8 rounded-lg object-cover" />
               <span className="text-xl font-bold text-green-600 dark:text-green-400">Akanti</span>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">AI-powered personal finance management for everyone. Track, budget, and grow your wealth.</p>
+            <p className="text-gray-400 text-sm">Track. Budget. Grow.</p>
             <div className="flex items-center gap-3 pt-2">
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors"><Twitter size={18} /></a>
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors"><Instagram size={18} /></a>
