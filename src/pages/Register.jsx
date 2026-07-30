@@ -31,7 +31,7 @@ export default function Register() {
       toast.success('Registration successful! Check your email for verification code.');
       navigate('/verify-email', { state: { email: form.email } });
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Registration failed');
+      toast.error(err.response?.data?.message || err.response?.data?.error || 'Registration failed');
     } finally {
       setLoading(false);
     }
