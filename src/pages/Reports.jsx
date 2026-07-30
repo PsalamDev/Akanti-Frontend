@@ -20,21 +20,33 @@ export default function Reports() {
   const totalIncome = income.reduce((sum, i) => sum + i.amount, 0);
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
-  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short' }) : '';
+  const safeDate = (d) => d ? new Date(d) : null;
 
-  const monthlyData = () => {
-    const months = {};
-    income.forEach(i => {
-      const key = fmtDate(i.date) || 'Unknown';
-      months[key] = months[key] || { name: key, income: 0, expenses: 0 };
-      months[key].income += i.amount;
+  const getPeriodKey = (item) => {
+    const d = safeDate(item.date);
+    if (!d) return 'Unknown';
+    if (reportType === 'daily') return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+    if (reportType === 'weekly') {
+      const start = new Date(d);
+      start.setDate(d.getDate() - d.getDay());
+      return start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' }) + ' wk';
+    }
+    if (reportType === 'annual') return `'${d.getFullYear().toString().slice(-2)}`;
+    return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+  };
+
+  const sortKey = (item) => safeDate(item.date)?.getTime() || 0;
+
+  const periodData = () => {
+    const groups = {};
+    const all = [...income.map(i => ({ ...i, type: 'income' })), ...expenses.map(e => ({ ...e, type: 'expense' }))];
+    all.sort((a, b) => sortKey(a) - sortKey(b));
+    all.forEach(item => {
+      const key = getPeriodKey(item) || 'Unknown';
+      if (!groups[key]) groups[key] = { name: key, income: 0, expenses: 0 };
+      groups[key][item.type === 'income' ? 'income' : 'expenses'] += item.amount;
     });
-    expenses.forEach(e => {
-      const key = fmtDate(e.date) || 'Unknown';
-      months[key] = months[key] || { name: key, income: 0, expenses: 0 };
-      months[key].expenses += e.amount;
-    });
-    return Object.values(months).slice(-6);
+    return Object.values(groups);
   };
 
   const downloadCSV = () => {
@@ -64,8 +76,8 @@ export default function Reports() {
         </button>
       </div>
 
-      <div className="flex gap-2">
-        {['summary', 'trends'].map(type => (
+      <div className="flex gap-2 flex-wrap">
+        {['summary', 'daily', 'weekly', 'monthly', 'annual'].map(type => (
           <button key={type} onClick={() => setReportType(type)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize ${reportType === type ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}>
             {type}
           </button>
@@ -87,18 +99,18 @@ export default function Reports() {
         </div>
       )}
 
-      {reportType === 'trends' && (
+      {reportType !== 'summary' && (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Monthly Trends</h2>
-          {monthlyData().length === 0 ? (
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 capitalize">{reportType} Trends</h2>
+          {periodData().length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400 text-center py-12">No data available</p>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyData()}>
+              <BarChart data={periodData()}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="name" stroke="#9ca3af" />
-                <YAxis stroke="#9ca3af" />
-                <Tooltip />
+                <XAxis dataKey="name" stroke="#9ca3af" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#9ca3af" tickFormatter={(v) => `₦${(v/1000).toFixed(0)}k`} />
+                <Tooltip formatter={(value) => `₦${Number(value).toLocaleString()}`} />
                 <Bar dataKey="income" fill="#22c55e" name="Income" />
                 <Bar dataKey="expenses" fill="#ef4444" name="Expenses" />
               </BarChart>
