@@ -12,6 +12,15 @@ export default function VerifyEmail() {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email || '';
+  const initialCode = location.state?.code || '';
+
+  useEffect(() => {
+    if (initialCode && initialCode.length === 6) {
+      const digits = initialCode.split('');
+      setCode(digits);
+      inputRefs.current[5]?.focus();
+    }
+  }, []);
 
   useEffect(() => {
     if (resendCooldown > 0) {

@@ -29,7 +29,7 @@ export default function Register() {
     try {
       const res = await authAPI.register({ fullName: form.fullName, email: form.email, password: form.password, userType: form.userType });
       toast.success('Registration successful! Check your email for verification code.');
-      navigate('/verify-email', { state: { email: form.email } });
+      navigate('/verify-email', { state: { email: form.email, code: res.data?.verificationCode } });
     } catch (err) {
       toast.error(err.response?.data?.message || err.response?.data?.error || 'Registration failed');
     } finally {
