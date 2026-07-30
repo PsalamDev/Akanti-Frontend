@@ -50,14 +50,19 @@ export default function Reports() {
   };
 
   const downloadCSV = () => {
-    const rows = [['Type', 'Description', 'Amount', 'Category', 'Date']];
-    income.forEach(i => rows.push(['Income', i.source || i.title, i.amount, i.category || '', i.date ? new Date(i.date).toLocaleDateString() : '-']));
-    expenses.forEach(e => rows.push(['Expense', e.description || e.title, e.amount, e.category || '', e.date ? new Date(e.date).toLocaleDateString() : '-']));
+    const rows = [['Period', 'Income', 'Expenses']];
+    const data = reportType === 'summary' ? [] : periodData();
+    if (data.length > 0) {
+      data.forEach(d => rows.push([d.name, d.income.toFixed(2), d.expenses.toFixed(2)]));
+    } else {
+      income.forEach(i => rows.push([i.date ? new Date(i.date).toLocaleDateString() : '-', i.amount.toFixed(2), '']));
+      expenses.forEach(e => rows.push([e.date ? new Date(e.date).toLocaleDateString() : '-', '', e.amount.toFixed(2)]));
+    }
     const csv = rows.map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'akanti-report.csv'; a.click();
+    a.href = url; a.download = `akanti-${reportType}-report.csv`; a.click();
     URL.revokeObjectURL(url);
     toast.success('Report downloaded');
   };
