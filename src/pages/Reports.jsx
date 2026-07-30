@@ -87,7 +87,7 @@ export default function Reports() {
         </div>
         <div className="relative">
           <button onClick={() => setShowDownload(!showDownload)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
-            <Download size={16} /> Download CSV <ChevronDown size={16} />
+            <Download size={16} /> Download Report <ChevronDown size={16} />
           </button>
           {showDownload && (
             <div className="fixed inset-0 z-10" onClick={() => setShowDownload(false)}></div>
