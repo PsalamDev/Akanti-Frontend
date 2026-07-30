@@ -4,10 +4,17 @@ import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff } from 'lucide-react';
 
-const userTypes = ['Student', 'Freelancer', 'Entrepreneur', 'Small Business', 'NGO', 'Personal Finance'];
+const userTypes = [
+  { label: 'Student', value: 'student' },
+  { label: 'Freelancer', value: 'freelancer' },
+  { label: 'Entrepreneur', value: 'entrepreneur' },
+  { label: 'Small Business', value: 'smallBusiness' },
+  { label: 'NGO', value: 'ngo' },
+  { label: 'Personal Finance User', value: 'personalFinance' },
+];
 
 export default function Register() {
-  const [form, setForm] = useState({ fullName: '', email: '', password: '', confirmPassword: '', userType: 'Personal Finance' });
+  const [form, setForm] = useState({ fullName: '', email: '', password: '', confirmPassword: '', userType: 'personalFinance' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -51,7 +58,7 @@ export default function Register() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">User Type</label>
               <select value={form.userType} onChange={(e) => setForm({ ...form, userType: e.target.value })} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                {userTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                {userTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
             </div>
             <div>

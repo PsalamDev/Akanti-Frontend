@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { adminAPI } from '../services/api';
 import toast from 'react-hot-toast';
+
+const userTypeLabels = { PersonalFinance: 'Personal Finance User', Student: 'Student', Freelancer: 'Freelancer', Entrepreneur: 'Entrepreneur', SmallBusiness: 'Small Business', NGO: 'NGO' };
 
 export default function AdminUserDetail() {
   const { id } = useParams();
@@ -38,7 +40,7 @@ export default function AdminUserDetail() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{user.fullName}</h1>
               <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
-              <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Type: {user.userType || 'Not set'} • Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Type: {userTypeLabels[user.userType] || user.userType || 'Not set'} • Joined {new Date(user.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
           <button onClick={toggleActive} className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${user.isActive ? 'bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900 dark:text-red-300' : 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300'}`}>

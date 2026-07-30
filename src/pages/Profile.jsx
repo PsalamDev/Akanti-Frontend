@@ -4,6 +4,15 @@ import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { User, Mail, Shield, Calendar, Save, Eye, EyeOff } from 'lucide-react';
 
+const userTypeLabels = {
+  PersonalFinance: 'Personal Finance User',
+  Student: 'Student',
+  Freelancer: 'Freelancer',
+  Entrepreneur: 'Entrepreneur',
+  SmallBusiness: 'Small Business',
+  NGO: 'NGO',
+};
+
 export default function Profile() {
   const { user } = useAuth();
   const [editing, setEditing] = useState(false);
@@ -84,7 +93,7 @@ export default function Profile() {
             <Shield size={20} className="text-green-600 dark:text-green-400" />
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400">User Type</p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.userType || 'Personal Finance'}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">{userTypeLabels[user?.userType] || user?.userType || 'Personal Finance User'}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { adminAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
+const userTypeLabels = { PersonalFinance: 'Personal Finance User', Student: 'Student', Freelancer: 'Freelancer', Entrepreneur: 'Entrepreneur', SmallBusiness: 'Small Business', NGO: 'NGO' };
+
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export default function AdminUsers() {
                   <Link to={`/admin/users/${user.id}`} className="font-medium text-green-600 hover:text-green-700 dark:text-green-400">{user.fullName}</Link>
                 </td>
                 <td className="px-6 py-4 text-gray-500 dark:text-gray-400">{user.email}</td>
-                <td className="px-6 py-4 text-gray-500 dark:text-gray-400">{user.userType || '-'}</td>
+                <td className="px-6 py-4 text-gray-500 dark:text-gray-400">{userTypeLabels[user.userType] || user.userType || '-'}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'}`}>
                     {user.isActive ? 'Active' : 'Inactive'}
