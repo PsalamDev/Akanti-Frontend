@@ -103,9 +103,6 @@ export default function Landing() {
           <div className="hidden md:flex items-center gap-6">
             <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Home</a>
             <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">About</a>
-            <Link to="/docs" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Docs</Link>
-            <Link to="/privacy" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Privacy</Link>
-            <Link to="/terms" className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors">Terms</Link>
             {token ? (
               <Link to="/dashboard" className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium transition-colors">Dashboard</Link>
             ) : (
@@ -123,9 +120,6 @@ export default function Landing() {
           <div className="md:hidden border-t border-gray-100 dark:border-gray-800 px-4 py-4 space-y-3">
             <a href="#" className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Home</a>
             <a href="#about" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">About</a>
-            <Link to="/docs" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Docs</Link>
-            <Link to="/privacy" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Privacy</Link>
-            <Link to="/terms" onClick={() => setMobileMenuOpen(false)} className="block text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium">Terms</Link>
             {token ? (
               <Link to="/dashboard" className="block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium text-center">Dashboard</Link>
             ) : (
