@@ -66,10 +66,9 @@ export default function Privacy() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Third-Party Services</h2>
             <p>Akanti uses the following third-party services:</p>
             <ul className="list-disc pl-6 space-y-1">
-              <li><strong>Supabase</strong> — Cloud database hosting (PostgreSQL)</li>
+              <li><strong>Microsoft SQL Server</strong> — Cloud database hosting</li>
               <li><strong>Render</strong> — Backend application hosting</li>
               <li><strong>Vercel</strong> — Frontend hosting</li>
-              <li><strong>Groq</strong> — AI model inference for financial insights</li>
             </ul>
             <p className="mt-2">Each service provider has their own privacy policy governing the handling of data processed through their infrastructure.</p>
           </section>

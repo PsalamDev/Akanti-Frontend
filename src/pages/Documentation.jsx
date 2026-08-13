@@ -96,8 +96,6 @@ const sections = [
                 ['GET', '/notification', 'List notifications'],
                 ['GET', '/dashboard', 'Dashboard summary data'],
                 ['GET', '/category', 'List categories'],
-                ['POST', '/aiassistant/chat', 'Send AI chat message'],
-                ['GET', '/aiassistant/health-score', 'Get financial health score'],
               ].map(([method, path, desc], i) => (
                 <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                   <td className="py-2 px-3">
@@ -126,7 +124,7 @@ const sections = [
           { q: 'Is Akanti free to use?', a: 'Yes, Akanti is currently free. We may introduce premium features in the future, but the core functionality will remain free.' },
           { q: 'Is my financial data secure?', a: 'Yes. Passwords are hashed using SHA-256. All data is encrypted in transit via HTTPS and at rest in our database. We never share your financial data with third parties.' },
           { q: 'Can I export my data?', a: 'Yes. The Reports page allows you to download a CSV file containing all your income and expense records.' },
-          { q: 'How does the AI work?', a: 'The AI assistant uses Groq\'s LLaMA 3.3 70B model. It analyzes your actual financial data to provide personalized insights and recommendations.' },
+          { q: 'Can I track my debt and budgets?', a: 'Yes. Track debts with payment reminders, set monthly budgets by category, and get alerts when you approach your budget limit.' },
           { q: 'What if I forget my password?', a: 'Use the "Forgot Password" link on the login page to receive a reset code via email.' },
           { q: 'Can I delete my account?', a: 'Yes. Contact support or use the profile settings to request account deletion. All your data will be permanently removed.' },
         ].map(({ q, a }, i) => (

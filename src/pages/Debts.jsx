@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { debtAPI } from '../services/api';
 import Modal from '../components/Modal';
 import ConfirmModal from '../components/ConfirmModal';
+import { Button, Input, Loading, PageHeader, EmptyState, Table, TableHead, Th, TableBody, TableRow, Td, Badge } from '../components/ui';
 import toast from 'react-hot-toast';
-import { ClipboardList, Bell, Clock, AlertTriangle } from 'lucide-react';
+import { ClipboardList, Bell, Clock } from 'lucide-react';
 
 export default function Debts() {
   const [items, setItems] = useState([]);
@@ -65,107 +66,95 @@ export default function Debts() {
       .finally(() => setSendingReminder(null));
   };
 
-  const statusColors = {
-    Pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-    Paid: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    PartiallyPaid: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-    Overdue: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-  };
+  const statusTone = (status) => ({
+    Pending: 'yellow',
+    Paid: 'green',
+    PartiallyPaid: 'blue',
+    Overdue: 'red',
+  }[status] || 'gray');
 
   const isOverdue = (item) => item.dueDate && new Date(item.dueDate) < new Date() && item.status === 'Pending';
 
   const displayItems = tab === 'upcoming' ? upcoming : items;
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div></div>;
+  if (loading) return <Loading className="h-64" />;
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Debts</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Track money owed to you and money you owe</p>
-        </div>
-        <button onClick={openAdd} className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap">
-          + Add Debt
-        </button>
-      </div>
+      <PageHeader title="Debts" subtitle="Track money owed to you and money you owe" action={<Button variant="purple" onClick={openAdd}>+ Add Debt</Button>} />
 
-      {/* Tabs */}
       <div className="flex gap-2">
-        <button onClick={() => setTab('all')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'all' ? 'bg-purple-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}>
-          <ClipboardList size={16} /> All Debts
-        </button>
-        <button onClick={() => setTab('upcoming')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === 'upcoming' ? 'bg-purple-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}`}>
-          <Clock size={16} /> Upcoming (30 days)
-        </button>
+        <Button variant={tab === 'all' ? 'purple' : 'secondary'} onClick={() => setTab('all')} size="sm">
+          <ClipboardList size={16} className="inline mr-1" /> All Debts
+        </Button>
+        <Button variant={tab === 'upcoming' ? 'purple' : 'secondary'} onClick={() => setTab('upcoming')} size="sm">
+          <Clock size={16} className="inline mr-1" /> Upcoming (30 days)
+        </Button>
       </div>
 
       {displayItems.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-          <p className="text-gray-500 dark:text-gray-400 text-lg flex items-center justify-center gap-2"><ClipboardList size={24} /> {tab === 'upcoming' ? 'No upcoming debts' : 'No debts tracked yet'}</p>
-          {tab !== 'upcoming' && <button onClick={openAdd} className="mt-4 text-green-600 hover:underline font-medium">Add your first debt record</button>}
-        </div>
+        <EmptyState
+          icon={<ClipboardList size={24} />}
+          title={tab === 'upcoming' ? 'No upcoming debts' : 'No debts tracked yet'}
+          action={tab !== 'upcoming' && <Button variant="link" onClick={openAdd}>Add your first debt record</Button>}
+        />
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-x-auto">
-          <table className="w-full min-w-[650px]">
-            <thead className="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Person</th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Amount</th>
-                <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Paid</th>
-                <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Type</th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
-                <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Due Date</th>
-                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {displayItems.map((item) => {
-                const status = isOverdue(item) ? 'Overdue' : item.status;
-                return (
-                  <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-4 sm:px-6 py-4">
-                      <p className="font-medium text-gray-900 dark:text-white">{item.personName}</p>
-                      {item.personEmail && <p className="text-sm text-gray-500 dark:text-gray-400">{item.personEmail}</p>}
-                    </td>
-                    <td className="px-4 sm:px-6 py-4 font-semibold text-gray-900 dark:text-white">₦{item.amount.toLocaleString()}</td>
-                    <td className="hidden sm:table-cell px-6 py-4 text-gray-500 dark:text-gray-400">₦{(item.amountPaid || 0).toLocaleString()}</td>
-                    <td className="hidden md:table-cell px-6 py-4 text-gray-500 dark:text-gray-400">{item.type === 'Lent' ? 'Owed to me' : 'I owe'}</td>
-                    <td className="px-4 sm:px-6 py-4"><span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[status] || statusColors.Pending}`}>{status}</span></td>
-                    <td className="hidden sm:table-cell px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '-'}</td>
-                    <td className="px-4 sm:px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1 flex-wrap">
-                        {item.type === 'Lent' && item.status !== 'Paid' && item.personEmail && (
-                          <button onClick={() => handleReminder(item)} disabled={sendingReminder === item.id} className="text-orange-600 hover:text-orange-800 dark:text-orange-400 text-xs px-2 py-1 rounded hover:bg-orange-50 dark:hover:bg-orange-900/20 disabled:opacity-50" title="Send Reminder">
-                            <Bell size={14} className="inline" /> {sendingReminder === item.id ? '...' : 'Remind'}
-                          </button>
-                        )}
-                        <button onClick={() => openEdit(item)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 text-xs px-2 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20">Edit</button>
-                        <button onClick={() => openDelete(item)} className="text-red-600 hover:text-red-800 dark:text-red-400 text-xs px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20">Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <Table>
+          <TableHead>
+            <tr>
+              <Th>Person</Th>
+              <Th>Amount</Th>
+              <Th className="hidden sm:table-cell">Paid</Th>
+              <Th className="hidden md:table-cell">Type</Th>
+              <Th>Status</Th>
+              <Th className="hidden sm:table-cell">Due Date</Th>
+              <Th className="text-right">Actions</Th>
+            </tr>
+          </TableHead>
+          <TableBody>
+            {displayItems.map((item) => {
+              const status = isOverdue(item) ? 'Overdue' : item.status;
+              return (
+                <TableRow key={item.id}>
+                  <Td>
+                    <p className="font-medium text-gray-900 dark:text-white">{item.personName}</p>
+                    {item.personEmail && <p className="text-sm text-gray-500 dark:text-gray-400">{item.personEmail}</p>}
+                  </Td>
+                  <Td className="font-semibold text-gray-900 dark:text-white">₦{item.amount.toLocaleString()}</Td>
+                  <Td className="hidden sm:table-cell text-gray-500 dark:text-gray-400">₦{(item.amountPaid || 0).toLocaleString()}</Td>
+                  <Td className="hidden md:table-cell text-gray-500 dark:text-gray-400">{item.type === 'Lent' ? 'Owed to me' : 'I owe'}</Td>
+                  <Td><Badge tone={statusTone(status)}>{status}</Badge></Td>
+                  <Td className="hidden sm:table-cell text-gray-500 dark:text-gray-400 text-sm">{item.dueDate ? new Date(item.dueDate).toLocaleDateString() : '-'}</Td>
+                  <Td className="text-right">
+                    <div className="flex items-center justify-end gap-1 flex-wrap">
+                      {item.type === 'Lent' && item.status !== 'Paid' && item.personEmail && (
+                        <button onClick={() => handleReminder(item)} disabled={sendingReminder === item.id} className="text-orange-600 hover:text-orange-800 dark:text-orange-400 text-xs px-2 py-1 rounded hover:bg-orange-50 dark:hover:bg-orange-900/20 disabled:opacity-50" title="Send Reminder">
+                          <Bell size={14} className="inline" /> {sendingReminder === item.id ? '...' : 'Remind'}
+                        </button>
+                      )}
+                      <button onClick={() => openEdit(item)} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 text-xs px-2 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20">Edit</button>
+                      <button onClick={() => openDelete(item)} className="text-red-600 hover:text-red-800 dark:text-red-400 text-xs px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20">Delete</button>
+                    </div>
+                  </Td>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       )}
 
-      {/* Add/Edit Debt Modal */}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingItem ? 'Edit Debt' : 'Add Debt'}>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="text" placeholder="Person Name" required value={form.personName} onChange={(e) => setForm({ ...form, personName: e.target.value })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-          <input type="email" placeholder="Person Email (optional)" value={form.personEmail} onChange={(e) => setForm({ ...form, personEmail: e.target.value })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-          <input type="number" placeholder="Amount" required step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-          <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent">
+          <Input placeholder="Person Name" required value={form.personName} onChange={(e) => setForm({ ...form, personName: e.target.value })} />
+          <Input type="email" placeholder="Person Email (optional)" value={form.personEmail} onChange={(e) => setForm({ ...form, personEmail: e.target.value })} />
+          <Input type="number" placeholder="Amount" required step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
+          <Input as="select" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
             <option value="Lent">Owed to me</option>
             <option value="Borrowed">I owe</option>
-          </select>
-          <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent" />
-          <textarea placeholder="Description" required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent" rows={3} />
+          </Input>
+          <Input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} />
+          <Input as="textarea" placeholder="Description" required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
 
-          {/* Reminder Settings */}
           <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Reminder Settings</p>
             <label className="flex items-center gap-3 cursor-pointer">
@@ -176,15 +165,14 @@ export default function Debts() {
             </label>
             {form.hasReminder && (
               <div className="mt-3">
-                <label className="text-sm text-gray-500 dark:text-gray-400">Remind me days before due date</label>
-                <input type="number" min="1" max="30" value={form.reminderDaysBefore} onChange={(e) => setForm({ ...form, reminderDaysBefore: parseInt(e.target.value) || 3 })} className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent" />
+                <Input label="Remind me days before due date" type="number" min="1" max="30" value={form.reminderDaysBefore} onChange={(e) => setForm({ ...form, reminderDaysBefore: parseInt(e.target.value) || 3 })} />
               </div>
             )}
           </div>
 
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors">{editingItem ? 'Update' : 'Add'} Debt</button>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button variant="purple" type="submit">{editingItem ? 'Update' : 'Add'} Debt</Button>
           </div>
         </form>
       </Modal>

@@ -123,15 +123,6 @@ export const categoryAPI = {
   getAll: (params) => api.get('/category', { params }),
 };
 
-export const aiAPI = {
-  getHealthScore: () => api.get('/aiassistant/health-score'),
-  getSpendingAnalysis: (params) => api.get('/aiassistant/spending-analysis', { params }),
-  getBudgetRecommendation: (id) => api.get(`/aiassistant/budget-recommendation/${id}`),
-  getSavingsSuggestions: () => api.get('/aiassistant/savings-suggestions'),
-  getExpensePrediction: () => api.get('/aiassistant/expense-prediction'),
-  chat: (data) => api.post('/aiassistant/chat', data),
-};
-
 export const adminAPI = {
   getDashboard: () => api.get('/admin/dashboard'),
   getUsers: (params) => api.get('/admin/users', { params }),
