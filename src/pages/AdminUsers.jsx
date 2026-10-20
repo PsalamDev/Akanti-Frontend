@@ -5,16 +5,26 @@ import toast from 'react-hot-toast';
 
 const userTypeLabels = { PersonalFinance: 'Personal Finance User', Student: 'Student', Freelancer: 'Freelancer', Entrepreneur: 'Entrepreneur', SmallBusiness: 'Small Business', NGO: 'NGO' };
 
+const PAGE_SIZE = 25;
+
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    adminAPI.getUsers()
-      .then(res => setUsers(res.data))
+    setLoading(true);
+    adminAPI.getUsers({ page, pageSize: PAGE_SIZE })
+      .then(res => {
+        setUsers(res.data.items || []);
+        setTotalCount(res.data.totalCount || 0);
+        setTotalPages(Math.max(res.data.totalPages || 1, 1));
+      })
       .catch(() => toast.error('Failed to load users'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [page]);
 
   const toggleActive = (userId, currentStatus) => {
     adminAPI.toggleActive(userId).then((res) => {
@@ -62,6 +72,31 @@ export default function AdminUsers() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {totalCount === 0
+            ? 'No users found'
+            : `Showing ${(page - 1) * PAGE_SIZE + 1}\u2013${Math.min(page * PAGE_SIZE, totalCount)} of ${totalCount} users`}
+        </p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPage(p => Math.max(p - 1, 1))}
+            disabled={page <= 1 || loading}
+            className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Page {page} of {totalPages}</span>
+          <button
+            onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+            disabled={page >= totalPages || loading}
+            className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

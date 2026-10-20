@@ -127,6 +127,7 @@ export const adminAPI = {
   getDashboard: () => api.get('/admin/dashboard'),
   getUsers: (params) => api.get('/admin/users', { params }),
   getUserDetail: (id) => api.get(`/admin/users/${id}`),
+  getUserTotals: (id) => api.get(`/admin/users/${id}/totals`),
   toggleActive: (id) => api.put(`/admin/users/${id}/toggle-active`),
   getAuditLogs: (params) => api.get('/admin/audit-logs', { params }),
 };
