@@ -11,16 +11,8 @@ export default function VerifyEmail() {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || '';
-  const initialCode = location.state?.code || '';
-
-  useEffect(() => {
-    if (initialCode && initialCode.length === 6) {
-      const digits = initialCode.split('');
-      setCode(digits);
-      inputRefs.current[5]?.focus();
-    }
-  }, []);
+  const emailFromState = location.state?.email || '';
+  const [email, setEmail] = useState(emailFromState);
 
   useEffect(() => {
     if (resendCooldown > 0) {
@@ -59,13 +51,17 @@ export default function VerifyEmail() {
   };
 
   const handleVerify = async (codeStr) => {
+    if (!email) {
+      toast.error('Please enter your email address first.');
+      return;
+    }
     setLoading(true);
     try {
       await authAPI.verifyEmail({ email, code: codeStr || code.join('') });
       toast.success('Email verified! You can now sign in.');
       navigate('/login');
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Verification failed');
+      toast.error(err.response?.data?.message || err.response?.data?.error || 'Verification failed');
       setCode(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     } finally {
@@ -74,12 +70,16 @@ export default function VerifyEmail() {
   };
 
   const handleResend = async () => {
+    if (!email) {
+      toast.error('Please enter your email address first.');
+      return;
+    }
     try {
       await authAPI.resendCode({ email });
       toast.success('New code sent!');
       setResendCooldown(60);
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to resend');
+      toast.error(err.response?.data?.message || err.response?.data?.error || 'Failed to resend');
     }
   };
 
@@ -92,7 +92,24 @@ export default function VerifyEmail() {
               <span className="text-3xl"><Mail className="text-green-600" size={32} /></span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Verify Your Email</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2">Enter the 6-digit code sent to<br /><span className="font-medium text-gray-700 dark:text-gray-300">{email || 'your email'}</span></p>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">
+              Enter the 6-digit code we emailed you
+              {emailFromState ? (
+                <>
+                  <br />
+                  <span className="font-medium text-gray-700 dark:text-gray-300">{emailFromState}</span>
+                </>
+              ) : null}
+            </p>
+            {!emailFromState && (
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="mt-4 w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+            )}
           </div>
 
           <div className="flex justify-center gap-2 mb-6" onPaste={handlePaste}>
@@ -101,7 +118,7 @@ export default function VerifyEmail() {
             ))}
           </div>
 
-          <button onClick={() => handleVerify()} disabled={loading || code.some(c => !c)} className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 mb-4">
+          <button onClick={() => handleVerify()} disabled={loading || !email || code.some(c => !c)} className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 mb-4">
             {loading ? 'Verifying...' : 'Verify Email'}
           </button>
 

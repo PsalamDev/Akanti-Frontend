@@ -27,9 +27,9 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const res = await authAPI.register({ fullName: form.fullName, email: form.email, password: form.password, userType: form.userType });
-      toast.success('Registration successful! Check your email for verification code.');
-      navigate('/verify-email', { state: { email: form.email, code: res.data?.verificationCode } });
+      await authAPI.register({ fullName: form.fullName, email: form.email, password: form.password, userType: form.userType });
+      toast.success('Account created! Check your email for the 6-digit verification code.');
+      navigate('/verify-email', { state: { email: form.email } });
     } catch (err) {
       toast.error(err.response?.data?.message || err.response?.data?.error || 'Registration failed');
     } finally {
