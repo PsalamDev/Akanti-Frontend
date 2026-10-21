@@ -140,6 +140,17 @@ export const invoiceAPI = {
   getSummary: () => api.get('/invoices/summary'),
 };
 
+export const aiAPI = {
+  getStatus: () => api.get('/ai/status'),
+  getInsights: () => api.get('/ai/insights'),
+  refreshInsights: () => api.post('/ai/insights/refresh'),
+  getChatSessions: () => api.get('/ai/chat/sessions'),
+  createChatSession: (data) => api.post('/ai/chat/sessions', data),
+  getChatMessages: (id) => api.get(`/ai/chat/sessions/${id}/messages`),
+  sendChatMessage: (id, message) => api.post(`/ai/chat/sessions/${id}/messages`, { message }),
+  deleteChatSession: (id) => api.delete(`/ai/chat/sessions/${id}`),
+};
+
 export const adminAPI = {
   getDashboard: () => api.get('/admin/dashboard'),
   getUsers: (params) => api.get('/admin/users', { params }),
