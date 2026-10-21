@@ -80,7 +80,7 @@ const sections = [
               {[
                 ['POST', '/auth/register', 'Create a new account'],
                 ['POST', '/auth/login', 'Log in and receive JWT'],
-                ['POST', '/auth/verify-email', 'Verify email with code'],
+                ['POST', '/auth/verify-email', 'Verify email with code (not required for signup)'],
                 ['POST', '/auth/forgot-password', 'Request password reset'],
                 ['POST', '/auth/reset-password', 'Reset password with code'],
                 ['GET', '/income', 'List all income records'],

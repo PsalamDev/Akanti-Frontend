@@ -28,8 +28,8 @@ export default function Register() {
     setLoading(true);
     try {
       await authAPI.register({ fullName: form.fullName, email: form.email, password: form.password, userType: form.userType });
-      toast.success('Account created! Check your email for the 6-digit verification code.');
-      navigate('/verify-email', { state: { email: form.email } });
+      toast.success('Account created! You can sign in now.');
+      navigate('/login');
     } catch (err) {
       toast.error(err.response?.data?.message || err.response?.data?.error || 'Registration failed');
     } finally {

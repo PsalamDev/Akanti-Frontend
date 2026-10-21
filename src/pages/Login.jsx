@@ -23,13 +23,7 @@ export default function Login() {
       navigate('/dashboard');
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.error || 'Login failed';
-      const needsVerification = err.response?.data?.needsVerification;
-      if (needsVerification) {
-        toast.error('Please verify your email first.');
-        navigate('/verify-email', { state: { email: form.email } });
-      } else {
-        toast.error(msg);
-      }
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

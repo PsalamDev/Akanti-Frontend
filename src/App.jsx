@@ -12,7 +12,6 @@ const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
-const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Income = lazy(() => import('./pages/Income'));
@@ -59,7 +58,10 @@ export default function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
+          {/* Email verification was dropped, so this page is no longer part of the signup
+              flow. The route is kept and redirected so an old bookmark or a stale link
+              lands on login instead of a dead end. */}
+          <Route path="/verify-email" element={<Navigate to="/login" replace />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
