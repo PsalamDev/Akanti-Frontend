@@ -19,7 +19,7 @@ const Expenses = lazy(() => import('./pages/Expenses'));
 const Budgets = lazy(() => import('./pages/Budgets'));
 const Debts = lazy(() => import('./pages/Debts'));
 const Reports = lazy(() => import('./pages/Reports'));
-const Insights = lazy(() => import('./pages/Insights'));
+const Assistant = lazy(() => import('./pages/Assistant'));
 const CashFlow = lazy(() => import('./pages/CashFlow'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const Profile = lazy(() => import('./pages/Profile'));
@@ -71,7 +71,7 @@ export default function App() {
             <Route path="budgets" element={<Budgets />} />
             <Route path="debts" element={<Debts />} />
             <Route path="reports" element={<Reports />} />
-            <Route path="insights" element={<Insights />} />
+            <Route path="assistant" element={<Assistant />} />
             <Route path="cashflow" element={<CashFlow />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />

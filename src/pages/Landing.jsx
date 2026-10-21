@@ -7,7 +7,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const features = [
   { icon: <BarChart3 size={28} className="text-green-600 dark:text-green-400" />, title: 'Smart Tracking', desc: 'Automatically categorize and track all your income and expenses in real-time.' },
   { icon: <Target size={28} className="text-green-600 dark:text-green-400" />, title: 'Budget Management', desc: 'Set spending limits and get alerts when you approach your budget thresholds.' },
-  { icon: <BrainCircuit size={28} className="text-green-600 dark:text-green-400" />, title: 'AI Insights', desc: 'Get personalized financial advice. Let AI guide your financial decisions.' },
+  { icon: <BrainCircuit size={28} className="text-green-600 dark:text-green-400" />, title: 'AI Assistant', desc: 'Ask questions in plain language and get answers grounded in your own totals.' },
   { icon: <TrendingUp size={28} className="text-green-600 dark:text-green-400" />, title: 'Visual Reports', desc: 'Beautiful charts and graphs to understand your financial patterns.' },
   { icon: <ClipboardList size={28} className="text-green-600 dark:text-green-400" />, title: 'Debt Tracking', desc: 'Keep track of money owed to you and debts you need to pay.' },
   { icon: <Bell size={28} className="text-green-600 dark:text-green-400" />, title: 'Smart Alerts', desc: 'Never miss a payment or budget limit with intelligent notifications.' },
@@ -16,7 +16,7 @@ const features = [
 const steps = [
   { icon: <UserPlus size={24} />, title: 'Create Account', desc: 'Sign up in seconds with your email address.' },
   { icon: <Database size={24} />, title: 'Add Your Data', desc: 'Enter your income, expenses, and financial goals.' },
-  { icon: <Sparkles size={24} />, title: 'Get Insights', desc: 'Let AI analyze your finances and provide recommendations.' },
+  { icon: <Sparkles size={24} />, title: 'Ask Akanti', desc: 'Ask the assistant about your spending and get advice you can act on.' },
 ];
 
 const testimonials = [

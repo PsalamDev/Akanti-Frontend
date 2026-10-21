@@ -22,7 +22,7 @@ const sections = [
           </div>
           <div className="flex items-start gap-3">
             <span className="flex-shrink-0 w-7 h-7 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
-            <div><strong className="text-gray-900 dark:text-white">Explore AI insights</strong><p className="text-sm mt-0.5">Ask the AI assistant questions about your finances and get personalized recommendations.</p></div>
+            <div><strong className="text-gray-900 dark:text-white">Ask the assistant</strong><p className="text-sm mt-0.5">Open "Ask Akanti" in the sidebar and ask questions about your finances in plain language.</p></div>
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@ const sections = [
         </div>
         <div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">AI Assistant</h3>
-          <p>Chat with an AI trained on your financial data. Ask questions like "How much did I spend on food this month?" or "Give me budgeting tips." Get personalized insights based on your actual spending patterns.</p>
+          <p>Chat with an AI assistant that knows your financial totals. Ask questions like "How much did I spend on food this month?" or "Give me budgeting tips." It works from your aggregate totals and trends, and never sees transaction names, descriptions or individual amounts.</p>
         </div>
         <div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Cash Flow & Reports</h3>

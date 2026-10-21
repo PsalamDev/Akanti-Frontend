@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { LayoutDashboard, CircleDollarSign, TrendingDown, Target, ClipboardList, ArrowUpRight, FileText, Bell, User, Settings, Moon, Sun, LogOut, Sparkles } from 'lucide-react';
+import { LayoutDashboard, CircleDollarSign, TrendingDown, Target, ClipboardList, ArrowUpRight, FileText, Bell, User, Settings, Moon, Sun, LogOut, MessageSquare } from 'lucide-react';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -11,7 +11,7 @@ const navItems = [
   { to: '/dashboard/debts', label: 'Debts', icon: <ClipboardList size={20} /> },
   { to: '/dashboard/cashflow', label: 'Cash Flow', icon: <ArrowUpRight size={20} /> },
   { to: '/dashboard/reports', label: 'Reports', icon: <FileText size={20} /> },
-  { to: '/dashboard/insights', label: 'AI Insights', icon: <Sparkles size={20} /> },
+  { to: '/dashboard/assistant', label: 'Ask Akanti', icon: <MessageSquare size={20} /> },
   { to: '/dashboard/notifications', label: 'Notifications', icon: <Bell size={20} /> },
   { to: '/dashboard/profile', label: 'Profile', icon: <User size={20} /> },
 ];

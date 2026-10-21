@@ -142,8 +142,6 @@ export const invoiceAPI = {
 
 export const aiAPI = {
   getStatus: () => api.get('/ai/status'),
-  getInsights: () => api.get('/ai/insights'),
-  refreshInsights: () => api.post('/ai/insights/refresh'),
   getChatSessions: () => api.get('/ai/chat/sessions'),
   createChatSession: (data) => api.post('/ai/chat/sessions', data),
   getChatMessages: (id) => api.get(`/ai/chat/sessions/${id}/messages`),
