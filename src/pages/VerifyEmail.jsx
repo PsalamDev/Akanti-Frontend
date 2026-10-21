@@ -77,7 +77,8 @@ export default function VerifyEmail() {
     try {
       await authAPI.resendCode({ email });
       toast.success('New code sent!');
-      setResendCooldown(60);
+      // Matches the server-side cooldown in AuthService.ResendVerificationAsync.
+      setResendCooldown(120);
     } catch (err) {
       toast.error(err.response?.data?.message || err.response?.data?.error || 'Failed to resend');
     }
