@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthContext';
 import DashboardLayout from './layouts/DashboardLayout';
 import AdminLayout from './layouts/AdminLayout';
 import AdminRoute from './components/AdminRoute';
+import FloatingAssistant from './components/FloatingAssistant';
 
 const Landing = lazy(() => import('./pages/Landing'));
 const Documentation = lazy(() => import('./pages/Documentation'));
@@ -48,9 +49,12 @@ function PublicRoute({ children }) {
 }
 
 export default function App() {
+  const { token } = useAuth();
+  
   return (
     <>
       <Toaster position="top-right" />
+      {token && <FloatingAssistant />}
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Landing />} />

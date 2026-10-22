@@ -116,6 +116,7 @@ export const notificationAPI = {
   getAll: (params) => api.get('/notification', { params }),
   markAsRead: (id) => api.put(`/notification/${id}/read`),
   markAllAsRead: () => api.put('/notification/read-all'),
+  delete: (id) => api.delete(`/notification/${id}`),
   getUnreadCount: () => api.get('/notification/unread-count'),
 };
 

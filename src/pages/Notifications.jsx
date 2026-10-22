@@ -3,6 +3,19 @@ import { notificationAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { Bell, AlertTriangle, ClipboardList, Info } from 'lucide-react';
 
+// The API sends the enum name (BudgetAlert, DebtReminder, ...). Matching is kept
+// tolerant of the older snake_case form so a cached response cannot break the icon.
+function iconFor(type) {
+  switch (String(type).replace(/_/g, '').toLowerCase()) {
+    case 'budgetalert':
+      return <AlertTriangle className="text-yellow-500" size={24} />;
+    case 'debtreminder':
+      return <ClipboardList className="text-blue-500" size={24} />;
+    default:
+      return <Info className="text-gray-500" size={24} />;
+  }
+}
+
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +77,7 @@ export default function Notifications() {
         <div className="space-y-2">
           {notifications.map((n) => (
             <div key={n.id} className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 flex items-start gap-4 ${!n.isRead ? 'border-l-4 border-l-green-500' : ''}`}>
-              <div className="text-2xl">{n.type === 'budget_alert' ? <AlertTriangle className="text-yellow-500" size={24} /> : n.type === 'debt_reminder' ? <ClipboardList className="text-blue-500" size={24} /> : <Info className="text-gray-500" size={24} />}</div>
+              <div className="text-2xl">{iconFor(n.type)}</div>
               <div className="flex-1">
                 <p className="text-gray-900 dark:text-white font-medium">{n.title}</p>
                 <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{n.message}</p>

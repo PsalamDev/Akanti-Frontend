@@ -50,8 +50,7 @@ export default function Reports() {
     return Object.values(groups);
   };
 
-  const downloadCSV = (period) => {
-    const rows = [['Period', 'Income', 'Expenses']];
+  const getGroupsForPeriod = (period) => {
     const all = [...income.map(i => ({ ...i, type: 'income' })), ...expenses.map(e => ({ ...e, type: 'expense' }))];
     const groups = {};
     all.forEach(item => {
@@ -65,6 +64,12 @@ export default function Reports() {
       if (!groups[key]) groups[key] = { name: key, income: 0, expenses: 0 };
       groups[key][item.type === 'income' ? 'income' : 'expenses'] += item.amount;
     });
+    return Object.values(groups);
+  };
+
+  const downloadCSV = (period) => {
+    const rows = [['Period', 'Income (NGN)', 'Expenses (NGN)']];
+    const groups = getGroupsForPeriod(period);
     Object.values(groups).forEach(d => rows.push([d.name, d.income.toFixed(2), d.expenses.toFixed(2)]));
     const csv = rows.map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -73,7 +78,80 @@ export default function Reports() {
     a.href = url; a.download = `akanti-${period}-report.csv`; a.click();
     URL.revokeObjectURL(url);
     setShowDownload(false);
-    toast.success(`${period} report downloaded`);
+    toast.success(`${period} report downloaded as CSV`);
+  };
+
+  const downloadPDF = (period) => {
+    const groups = getGroupsForPeriod(period);
+    if (groups.length === 0) {
+      toast.error('No data to export');
+      setShowDownload(false);
+      return;
+    }
+
+    const rowsHtml = groups.map(g => `
+      <tr>
+        <td>${g.name}</td>
+        <td style="color: #10B981;">₦${g.income.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td style="color: #ef4444;">₦${g.expenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      </tr>
+    `).join('');
+
+    const html = `
+      <html>
+        <head>
+          <title>Akanti ${period} Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; color: #111; }
+            h1 { color: #10B981; margin-bottom: 4px; }
+            .sub { color: #666; margin-bottom: 32px; text-transform: capitalize; }
+            .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+            .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
+            .label { color: #666; font-size: 14px; }
+            .value { font-size: 24px; font-weight: bold; margin-top: 8px; }
+            .green { color: #10B981; }
+            .red { color: #ef4444; }
+            .section { margin-bottom: 32px; }
+            h2 { margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; }
+            th { background: #f9fafb; }
+          </style>
+        </head>
+        <body>
+          <h1>Akanti Financial Report</h1>
+          <div class="sub">${period} report</div>
+          <div class="summary">
+            <div class="card"><div class="label">Total Income</div><div class="value green">₦${totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
+            <div class="card"><div class="label">Total Expenses</div><div class="value red">₦${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
+            <div class="card"><div class="label">Net Balance</div><div class="value ${(totalIncome - totalExpenses) >= 0 ? 'green' : 'red'}">₦${(totalIncome - totalExpenses).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
+          </div>
+          <div class="section">
+            <h2>Breakdown</h2>
+            <table>
+              <thead><tr><th>Period</th><th>Income</th><th>Expenses</th></tr></thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error('Allow popups to download PDF');
+      setShowDownload(false);
+      return;
+    }
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+    setShowDownload(false);
+    toast.success(`${period} report prepared for PDF`);
   };
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div></div>;
@@ -93,11 +171,17 @@ export default function Reports() {
             <div className="fixed inset-0 z-10" onClick={() => setShowDownload(false)}></div>
           )}
           {showDownload && (
-            <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
               {['daily', 'weekly', 'monthly', 'annual'].map(p => (
-                <button key={p} onClick={() => downloadCSV(p)} className="block w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 capitalize first:rounded-t-lg last:rounded-b-lg">
-                  {p} Report
-                </button>
+                <div key={p} className="border-b border-gray-100 dark:border-gray-700 last:border-0">
+                  <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">{p} Report</div>
+                  <button onClick={() => downloadCSV(p)} className="block w-full text-left px-4 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Download CSV
+                  </button>
+                  <button onClick={() => downloadPDF(p)} className="block w-full text-left px-4 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 mb-1">
+                    Download PDF
+                  </button>
+                </div>
               ))}
             </div>
           )}
