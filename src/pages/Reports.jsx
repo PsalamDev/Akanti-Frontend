@@ -171,18 +171,25 @@ export default function Reports() {
             <div className="fixed inset-0 z-10" onClick={() => setShowDownload(false)}></div>
           )}
           {showDownload && (
-            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
-              {['daily', 'weekly', 'monthly', 'annual'].map(p => (
-                <div key={p} className="border-b border-gray-100 dark:border-gray-700 last:border-0">
-                  <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">{p} Report</div>
-                  <button onClick={() => downloadCSV(p)} className="block w-full text-left px-4 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    Download CSV
-                  </button>
-                  <button onClick={() => downloadPDF(p)} className="block w-full text-left px-4 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 mb-1">
-                    Download PDF
-                  </button>
-                </div>
-              ))}
+            <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20 overflow-hidden">
+              <button
+                onClick={() => {
+                  const period = reportType === 'summary' ? 'monthly' : reportType;
+                  downloadCSV(period);
+                }}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Download CSV
+              </button>
+              <button
+                onClick={() => {
+                  const period = reportType === 'summary' ? 'monthly' : reportType;
+                  downloadPDF(period);
+                }}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Download PDF
+              </button>
             </div>
           )}
         </div>
