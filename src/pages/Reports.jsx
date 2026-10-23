@@ -4,6 +4,7 @@ import { incomeAPI, expenseAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { Download, ChevronDown } from 'lucide-react';
 import Loading from '../components/ui/Loading';
+import html2pdf from 'html2pdf.js';
 
 export default function Reports() {
   const [income, setIncome] = useState([]);
@@ -98,61 +99,52 @@ export default function Reports() {
       </tr>
     `).join('');
 
-    const html = `
-      <html>
-        <head>
-          <title>Akanti ${period} Report</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 40px; color: #111; }
-            h1 { color: #10B981; margin-bottom: 4px; }
-            .sub { color: #666; margin-bottom: 32px; text-transform: capitalize; }
-            .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-            .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
-            .label { color: #666; font-size: 14px; }
-            .value { font-size: 24px; font-weight: bold; margin-top: 8px; }
-            .green { color: #10B981; }
-            .red { color: #ef4444; }
-            .section { margin-bottom: 32px; }
-            h2 { margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; }
-            th { background: #f9fafb; }
-          </style>
-        </head>
-        <body>
-          <h1>Akanti Financial Report</h1>
-          <div class="sub">${period} report</div>
-          <div class="summary">
-            <div class="card"><div class="label">Total Income</div><div class="value green">₦${totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
-            <div class="card"><div class="label">Total Expenses</div><div class="value red">₦${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
-            <div class="card"><div class="label">Net Balance</div><div class="value ${(totalIncome - totalExpenses) >= 0 ? 'green' : 'red'}">₦${(totalIncome - totalExpenses).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
+    const element = document.createElement('div');
+    element.innerHTML = `
+      <div style="font-family: Arial, sans-serif; padding: 40px; color: #111;">
+        <h1 style="color: #10B981; margin-bottom: 4px;">Akanti Financial Report</h1>
+        <div style="color: #666; margin-bottom: 32px; text-transform: capitalize;">${period} report</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;">
+          <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+            <div style="color: #666; font-size: 14px;">Total Income</div>
+            <div style="font-size: 24px; font-weight: bold; margin-top: 8px; color: #10B981;">₦${totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
-          <div class="section">
-            <h2>Breakdown</h2>
-            <table>
-              <thead><tr><th>Period</th><th>Income</th><th>Expenses</th></tr></thead>
-              <tbody>${rowsHtml}</tbody>
-            </table>
+          <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+            <div style="color: #666; font-size: 14px;">Total Expenses</div>
+            <div style="font-size: 24px; font-weight: bold; margin-top: 8px; color: #ef4444;">₦${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
-        </body>
-      </html>
+          <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+            <div style="color: #666; font-size: 14px;">Net Balance</div>
+            <div style="font-size: 24px; font-weight: bold; margin-top: 8px; color: ${(totalIncome - totalExpenses) >= 0 ? '#10B981' : '#ef4444'};">₦${(totalIncome - totalExpenses).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          </div>
+        </div>
+        <div style="margin-bottom: 32px;">
+          <h2 style="margin-bottom: 16px;">Breakdown</h2>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; background: #f9fafb;">Period</th>
+                <th style="text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; background: #f9fafb;">Income</th>
+                <th style="text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; background: #f9fafb;">Expenses</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+      </div>
     `;
 
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      toast.error('Allow popups to download PDF');
-      setShowDownload(false);
-      return;
-    }
-    printWindow.document.write(html);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 250);
+    const options = {
+      margin: 10,
+      filename: `akanti-${period}-report.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(options).from(element).save();
     setShowDownload(false);
-    toast.success(`${period} report prepared for PDF`);
+    toast.success(`${period} report downloaded as PDF`);
   };
 
   if (loading) return <Loading className="h-64" />;
