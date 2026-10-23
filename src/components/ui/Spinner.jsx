@@ -1,8 +1,15 @@
 const sizes = {
-  sm: 'h-8 w-8 border-b-2',
-  md: 'h-12 w-12 border-b-2',
+  sm: 'h-8 w-8',
+  md: 'h-12 w-12',
+  lg: 'h-16 w-16',
 };
 
 export default function Spinner({ size = 'sm', className = '' }) {
-  return <div className={`animate-spin rounded-full border-green-600 ${sizes[size]} ${className}`} />;
+  return (
+    <img
+      src="/akanti-logo.jpeg"
+      alt="Akanti loading"
+      className={`rounded-lg object-cover animate-pulse ${sizes[size]} ${className}`}
+    />
+  );
 }

@@ -31,8 +31,8 @@ const AdminAuditLogs = lazy(() => import('./pages/AdminAuditLogs'));
 
 function PageLoader() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+      <img src="/akanti-logo.jpeg" alt="Akanti" className="h-16 w-16 rounded-lg object-cover animate-pulse" />
     </div>
   );
 }
