@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
       const savedToken = localStorage.getItem('token');
       
       if (!savedToken) {
-        console.log("[AuthContext] No token found in localStorage. Setting loading to false.");
+
         setLoading(false);
         return;
       }
