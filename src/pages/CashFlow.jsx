@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { incomeAPI, expenseAPI } from '../services/api';
 import toast from 'react-hot-toast';
+import Loading from '../components/ui/Loading';
 
 const COLORS = ['#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
 
@@ -48,7 +49,7 @@ export default function CashFlow() {
     return Object.entries(cats).map(([name, value]) => ({ name, value }));
   };
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div></div>;
+  if (loading) return <Loading className="h-64" />;
 
   const lineData = monthlyData();
   const pieData = categoryData();

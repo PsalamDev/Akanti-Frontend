@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { incomeAPI, expenseAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { Download, ChevronDown } from 'lucide-react';
+import Loading from '../components/ui/Loading';
 
 export default function Reports() {
   const [income, setIncome] = useState([]);
@@ -154,7 +155,7 @@ export default function Reports() {
     toast.success(`${period} report prepared for PDF`);
   };
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div></div>;
+  if (loading) return <Loading className="h-64" />;
 
   return (
     <div className="space-y-6">
